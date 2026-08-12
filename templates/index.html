@@ -37,7 +37,13 @@
         /* Responsive Fixes */
         @media (max-width: 768px) {
             #sidebar { width: 100% !important; left: -100% !important; }
+            #sidebar.sidebar-active { left: 0 !important; }
             #mainContent { margin-left: 0 !important; }
+        }
+        
+        @media (min-width: 769px) {
+            #sidebar { left: -250px !important; }
+            #sidebar.sidebar-active { left: 0 !important; }
         }
         
         #mainContent { width: 100%; transition: margin-left 0.3s; }
@@ -46,7 +52,7 @@
 </head>
 <body class="bg-light">
     <!-- Sidebar de Navegación -->
-    <nav id="sidebar" class="bg-dark text-white p-3" style="position: fixed; left: 0; top: 0; width: 250px; height: 100%; overflow-y: auto; z-index: 900; transition: left 0.3s; padding-top: 80px;">
+    <nav id="sidebar" class="bg-dark text-white p-3" style="position: fixed; top: 0; width: 250px; height: 100%; overflow-y: auto; z-index: 900; transition: left 0.3s; padding-top: 80px;">
         <h3 class="ps-2 mb-4"><br>Categorías</h3>
         <ul class="nav flex-column">
             <!-- Sección Servicios -->
@@ -81,7 +87,11 @@
     
     <!-- Botón Volver al Inicio y Carrito -->
     <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
-        <a href="/" class="btn btn-primary">↑ Inicio</a>
+        {% if query %}
+            <a href="/" class="btn btn-primary">↑ Inicio</a>
+        {% else %}
+            <a href="#" class="btn btn-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">↑ Inicio</a>
+        {% endif %}
         <button class="btn btn-warning position-relative" onclick="toggleCart()" id="cartBtn">
             🛒 <span id="cartCount" class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill" style="display: none;">0</span>
         </button>
@@ -205,23 +215,12 @@
             const mainContent = document.getElementById('mainContent');
             const isMobile = window.innerWidth <= 768;
             
-            if (isMobile) {
-                // Mobile: toggle overlay
-                if (sidebar.style.left === '0px') {
-                    sidebar.style.left = '-100%';
-                } else {
-                    sidebar.style.left = '0px';
-                }
-            } else {
-                // Desktop: toggle push
-                const currentLeft = window.getComputedStyle(sidebar).left;
-                if (currentLeft === '0px') {
-                    sidebar.style.left = '-250px';
-                    mainContent.style.marginLeft = '20px';
-                } else {
-                    sidebar.style.left = '0px';
-                    mainContent.style.marginLeft = '270px';
-                }
+            sidebar.classList.toggle('sidebar-active');
+            
+            if (!isMobile) {
+                // Desktop: push content
+                const isActive = sidebar.classList.contains('sidebar-active');
+                mainContent.style.marginLeft = isActive ? '250px' : '20px';
             }
         }
 
