@@ -1,6 +1,6 @@
 requests
 beautifulsoup4
 flask
-playwright
+playwright 
 mcp
 gunicorn

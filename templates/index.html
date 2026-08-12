@@ -18,6 +18,7 @@
 
         /* Modern Mesh Background for Banner */
         .banner-mesh {
+            position: relative;
             background-color: #0d6efd;
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(255,255,255,0.15) 0%, transparent 20%),
@@ -25,12 +26,28 @@
                 linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 75%, transparent 75%, transparent);
             background-size: 100px 100px;
         }
+
+        .about-link {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Fixes */
+        @media (max-width: 768px) {
+            #sidebar { width: 100% !important; left: -100% !important; }
+            #mainContent { margin-left: 0 !important; }
+        }
+        
+        #mainContent { width: 100%; transition: margin-left 0.3s; }
+        body, html { overflow-x: hidden; width: 100%; }
     </style>
 </head>
 <body class="bg-light">
     <!-- Sidebar de Navegación -->
     <nav id="sidebar" class="bg-dark text-white p-3" style="position: fixed; left: 0; top: 0; width: 250px; height: 100%; overflow-y: auto; z-index: 900; transition: left 0.3s; padding-top: 80px;">
-        <h3 class="ps-2 mb-4">Categorías</h3>
+        <h3 class="ps-2 mb-4"><br>Categorías</h3>
         <ul class="nav flex-column">
             <!-- Sección Servicios -->
             <li class="nav-item mb-3">
@@ -75,6 +92,7 @@
         <div class="banner-mesh text-white text-center py-3 mb-4">
             <h1 class="display-5 fw-bold">Todo Mascotas</h1>
             <p class="lead">Alimentación de calidad, paseos e instalación de redes para que disfruten su hogar sin riesgos</p>
+            <a href="/about" class="text-white text-decoration-none border-bottom about-link">Sobre Nosotros</a>
         </div>
         
         <div class="container py-3">
@@ -185,13 +203,25 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('mainContent');
-            const currentLeft = window.getComputedStyle(sidebar).left;
-            if (currentLeft === '0px') {
-                sidebar.style.left = '-250px';
-                mainContent.style.marginLeft = '20px';
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                // Mobile: toggle overlay
+                if (sidebar.style.left === '0px') {
+                    sidebar.style.left = '-100%';
+                } else {
+                    sidebar.style.left = '0px';
+                }
             } else {
-                sidebar.style.left = '0px';
-                mainContent.style.marginLeft = '270px';
+                // Desktop: toggle push
+                const currentLeft = window.getComputedStyle(sidebar).left;
+                if (currentLeft === '0px') {
+                    sidebar.style.left = '-250px';
+                    mainContent.style.marginLeft = '20px';
+                } else {
+                    sidebar.style.left = '0px';
+                    mainContent.style.marginLeft = '270px';
+                }
             }
         }
 
