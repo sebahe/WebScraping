@@ -91,7 +91,8 @@ VALID_CATEGORY_URLS = [
     'https://www.veterinariaalem.com/comida-para-gatos/linea-size1/',
     'https://www.veterinariaalem.com/comida-para-gatos/sieger/',
     'https://www.veterinariaalem.com/comida-para-gatos/unik1/',
-    'https://www.veterinariaalem.com/comida-para-gatos/whiskas/'
+    'https://www.veterinariaalem.com/comida-para-gatos/whiskas/',
+    'https://www.veterinariaalem.com/accesorios/gato/sanitarios/'
 ]
 
 HEADERS = {
@@ -99,6 +100,10 @@ HEADERS = {
 }
 
 def parse_url_for_categories(url):
+    # Excepción para la URL de Sanitarios
+    if 'accesorios/gato/sanitarios' in url:
+        return 'Accesorios', 'Sanitarios'
+
     path = urlparse(url).path.strip('/')
     parts = path.split('/')
     
@@ -240,16 +245,39 @@ def search_products(query):
     grouped = get_grouped_products()
     results = {}
     
+    # Mapeo de marcas principales a sub-marcas
+    BRAND_MAPPING = {
+        "purina": ["pro plan", "excellent", "cat chow", "dog chow", "dogui"],
+        "royal canin": ["royal canin"],
+        "old prince": ["old prince", "equilibrium"]
+    }
+    
+    # Obtener sub-marcas si la consulta coincide con una marca principal
+    target_subbrands = BRAND_MAPPING.get(query, [])
+    
     for cat, subcategories in grouped.items():
         for subcat, products_map in subcategories.items():
             for base_name, variants in products_map.items():
-                # Check if query in base name or any variant name
+                # Comprobar coincidencia directa (nombre o variantes)
                 match = query in base_name.lower()
                 if not match:
                     for v in variants:
                         if query in v['nombre_completo'].lower():
                             match = True
                             break
+                
+                # Comprobar coincidencia por marca principal
+                if not match and target_subbrands:
+                    for subbrand in target_subbrands:
+                        if subbrand in base_name.lower():
+                            match = True
+                            break
+                        if not match:
+                            for v in variants:
+                                if subbrand in v['nombre_completo'].lower():
+                                    match = True
+                                    break
+                
                 if match:
                     if cat not in results: results[cat] = {}
                     if subcat not in results[cat]: results[cat][subcat] = {}

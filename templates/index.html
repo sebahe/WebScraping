@@ -66,17 +66,17 @@
             <!-- Sección Productos -->
             <li class="nav-item">
                 <h5 class="text-white fw-bold ps-3">Productos</h5>
-                {% for category, subcategories in grouped_products.items() %}
-                <li class="nav-item">
-                    <a class="nav-link text-white fw-bold" href="#{{ category|slugify }}">{{ category }}</a>
-                    <ul class="nav flex-column ms-3">
-                        {% for subcategory in subcategories.keys() %}
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50" href="#{{ subcategory|slugify }}">{{ subcategory }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </li>
+                {% for category, subcategories in all_products.items() %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="/#{{ category|slugify }}">{{ category }}</a>
+                        <ul class="nav flex-column ms-3">
+                            {% for subcategory in subcategories.keys() %}
+                            <li class="nav-item">
+                                <a class="nav-link text-white-50" href="/#{{ subcategory|slugify }}">{{ subcategory }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
                 {% endfor %}
             </li>
         </ul>

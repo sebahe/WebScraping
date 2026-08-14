@@ -11,12 +11,14 @@ def slugify(s):
 @app.route('/')
 def index():
     query = request.args.get('q')
+    all_products = get_grouped_products()
+    
     if query:
         grouped_products = search_products(query)
     else:
-        grouped_products = get_grouped_products()
+        grouped_products = all_products
     
-    return render_template('index.html', grouped_products=grouped_products, query=query)
+    return render_template('index.html', all_products=all_products, grouped_products=grouped_products, query=query)
 
 @app.route('/about')
 def about():
